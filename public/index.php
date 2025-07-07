@@ -1,3 +1,3 @@
 <?php
 
-var_dump($_SERVER);
+die("Wake up, Neo!");

@@ -8,28 +8,16 @@ use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardButton;
 use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardMarkup;
 use SergiX44\Nutgram\Telegram\Types\Message\Message;
 
-$raw_input = json_decode(file_get_contents('php://input'), true);
-$dir = __DIR__ . '/../logs';
-$dt = date('Y-m-d-H-i-s-u');
-$fn = $dir . "/raw-{$dt}.txt";
-file_put_contents($fn , var_export($raw_input, true));
+logRAW(__DIR__ . '/../logs');
+
+$db = new PDO('sqlite:moderation_bot.db');
+$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 $TOKEN = $config['TOKEN'];
-$bot = new Nutgram($TOKEN);
-
-// Конфигурация
 $ADMIN_CHANNEL_ID = $config['ADMIN_CHANNEL_ID']; // ID админ-канала (с минусом)
 $PUBLIC_CHANNEL_ID = $config['PUBLIC_CHANNEL_ID']; // ID публичного канала
 
-// Временное хранилище (в продакшене используйте БД)
-$messageStore = [];
-
-// Функция бана пользователя
-function banUser(int $userId): void
-{
-    file_put_contents('banned_users.txt', "$userId\n", FILE_APPEND);
-    // Здесь можно добавить реальный бан через API Telegram
-}
+$bot = new Nutgram($TOKEN);
 
 // Обработчик приватных сообщений
 $bot->onMessage(function (Nutgram $bot, Message $msg) use ($ADMIN_CHANNEL_ID, &$messageStore) {

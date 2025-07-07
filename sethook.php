@@ -4,6 +4,7 @@ $config = require __DIR__ . '/config.php';
 
 $bot_api_key = $config['TOKEN'];
 $domain = 'pirozhok.dev.wombatrpg.ru';
+$domain = 'pirozhok.bot.wombatrpg.ru';
 $target = 'bot_nut.php';
 // $target = 'bot_legacy.php';
 
