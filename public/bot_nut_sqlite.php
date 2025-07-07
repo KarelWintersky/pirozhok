@@ -116,17 +116,30 @@ use SergiX44\Nutgram\Nutgram;
 use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardButton;
 use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardMarkup;
 use SergiX44\Nutgram\Telegram\Types\Message\Message;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Component\Cache\Psr16Cache;
 
 Engine::logRAW(__DIR__ . '/../logs');
 
 $db = new PDO('sqlite:pirozhok.sqlite');
 $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+Engine::prepareDB($db);
+
 $TOKEN = $config['TOKEN'];
 $ADMIN_CHANNEL_ID = $config['ADMIN_CHANNEL_ID']; // ID админ-канала (с минусом)
 $PUBLIC_CHANNEL_ID = $config['PUBLIC_CHANNEL_ID']; // ID публичного канала
 
-$bot = new Nutgram($TOKEN);
+// cache
+$psr6Cache = new FilesystemAdapter();
+$psr16Cache = new Psr16Cache($psr6Cache);
+$bot_config = new \SergiX44\Nutgram\Configuration(
+    clientTimeout: 30,
+    cache: $psr16Cache
+);
+
+$bot = new Nutgram($TOKEN, $bot_config);
+$bot->setRunningMode(\SergiX44\Nutgram\RunningMode\Webhook::class);
 
 // Обработчик входящих сообщений
 $bot->onMessage(function (Nutgram $bot) use ($ADMIN_CHANNEL_ID, $db) {

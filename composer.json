@@ -21,7 +21,8 @@
         "psr/log": "*",
         "nutgram/nutgram": "^4.31",
         "polyfills/array-find": "^1.0",
-        "irazasyed/telegram-bot-sdk": "^3.15"
+        "irazasyed/telegram-bot-sdk": "^3.15",
+        "symfony/cache": "^7.3"
     },
     "autoload": {
         "psr-4": {
